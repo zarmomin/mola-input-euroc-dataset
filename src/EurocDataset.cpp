@@ -51,12 +51,12 @@ void EurocDataset::initialize(const std::string& cfg_block)
     // Mandatory parameters:
     auto c = YAML::Load(cfg_block);
 
-    ENSURE_YAML_ENTRY_EXISTS(c, "params");
+    ensureYamlEntryExists(c, "params");
     auto cfg = c["params"];
     MRPT_LOG_DEBUG_STREAM("Initializing with these params:\n" << cfg);
 
-    YAML_LOAD_MEMBER_REQ(base_dir, std::string);
-    YAML_LOAD_MEMBER_REQ(sequence, std::string);
+    yamlLoadMemberReq<std::string>(cfg, "base_dir", base_dir);
+    yamlLoadMemberReq<std::string>(cfg, "sequence", sequence);
 
     seq_dir_ = base_dir_ + "/"s + sequence_ + "/mav0"s;
     ASSERT_DIRECTORY_EXISTS_(seq_dir_);
@@ -65,7 +65,7 @@ void EurocDataset::initialize(const std::string& cfg_block)
     ASSERT_DIRECTORY_EXISTS_(seq_dir_ + "/imu0"s);
 
     // Optional params with default values:
-    YAML_LOAD_MEMBER_OPT(time_warp_scale, double);
+    yamlLoadMemberOpt<double>(cfg, "time_warp_scale", time_warp_scale);
 
     // Preload everything we may need later to quickly replay the dataset in
     // realtime:
@@ -110,9 +110,9 @@ void EurocDataset::initialize(const std::string& cfg_block)
         auto cal = YAML::LoadFile(fil_calib);
 
         // Camera pose:
-        ENSURE_YAML_ENTRY_EXISTS(cal, "T_BS");
+        ensureYamlEntryExists(cal, "T_BS");
         auto T_BS = cal["T_BS"];
-        ENSURE_YAML_ENTRY_EXISTS(T_BS, "data");
+        ensureYamlEntryExists(T_BS, "data");
         auto cam_pose = T_BS["data"];
 
         const mrpt::poses::CPose3D imu2veh(
