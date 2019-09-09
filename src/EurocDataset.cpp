@@ -55,8 +55,8 @@ void EurocDataset::initialize(const std::string& cfg_block)
     auto cfg = c["params"];
     MRPT_LOG_DEBUG_STREAM("Initializing with these params:\n" << cfg);
 
-    yamlLoadMemberReq<std::string>(cfg, "base_dir", &base_dir);
-    yamlLoadMemberReq<std::string>(cfg, "sequence", &sequence);
+    yamlLoadMemberReq<std::string>(cfg, "base_dir", &base_dir_);
+    yamlLoadMemberReq<std::string>(cfg, "sequence", &sequence_);
 
     seq_dir_ = base_dir_ + "/"s + sequence_ + "/mav0"s;
     ASSERT_DIRECTORY_EXISTS_(seq_dir_);
@@ -65,7 +65,7 @@ void EurocDataset::initialize(const std::string& cfg_block)
     ASSERT_DIRECTORY_EXISTS_(seq_dir_ + "/imu0"s);
 
     // Optional params with default values:
-    yamlLoadMemberOpt<double>(cfg, "time_warp_scale", &time_warp_scale);
+    yamlLoadMemberOpt<double>(cfg, "time_warp_scale", &time_warp_scale_);
 
     // Preload everything we may need later to quickly replay the dataset in
     // realtime:
